@@ -1,5 +1,8 @@
+// Límite de stock a partir del cual se avisa que quedan pocas unidades
+
 const STOCK_BAJO = 3;
 
+//Menú de opciones
 const textoMenu =
     "Seleccione la opción que desea comprar:\n" +
     "1 - Remera Negra\n" +
@@ -14,30 +17,35 @@ const textoMenu =
     "10 - Cambiar una remera del carrito por otro color\n" +
     "11 - Salir";
 
-class Producto {
-    constructor (tipo, color, stock, precio){
+// Clase que modela una remera de la tienda
+    class Producto {
+    constructor(tipo, color, stock, precio) {
         this.tipo = tipo;
         this.color = color;
         this.stock = stock;
         this.precio = precio;
     }
 
+        // Resta una unidad de stock. Devuelve true si se pudo vender y false si no había stock
+
     vender() {
-    if (this.stock > 0) {
-        this.stock--;
-        return true;
+        if (this.stock > 0) {
+            this.stock--;
+            return true;
+        }
+        return false;
     }
-    return false;
 }
-}
+// Remeras de la tienda, creadas con la clase Producto
+const remera1 = new Producto("Remera", "Negra", 10, 10000);
+const remera2 = new Producto("Remera", "Roja", 4, 7000);
+const remera3 = new Producto("Remera", "Blanca", 7, 8000);
+const remera4 = new Producto("Remera", "Verde", 8, 9000);
+const remera5 = new Producto("Remera", "Azul", 5, 6000);
 
-const remera1 = new Producto ("Remera", "Negra", 10, 10000);
-const remera2 = new Producto ("Remera", "Roja", 4, 7000);
-const remera3 = new Producto ("Remera", "Blanca", 7, 8000);
-const remera4 = new Producto ("Remera", "Verde", 8, 9000);
-const remera5 = new Producto ("Remera", "Azul", 5, 6000);
-
+//Array con todas las remeras
 let productos = [remera1, remera2, remera3, remera4, remera5];
+//carrito de compras
 let carrito = [];
 let opcion;
 
@@ -47,9 +55,9 @@ function mostrarMensaje(texto) {
     console.log(texto);
     alert(texto);
 }
-
+//Checkout de compra
 function procesarCompra(producto) {
-    if (producto.vender()){
+    if (producto.vender()) {
         carrito.push(producto.color);
         mostrarMensaje("Compraste una remera " + producto.color + ". El precio es $" + producto.precio + ". Stock restante: " + producto.stock);
         if (esStockBajo(producto.stock)) {
@@ -60,6 +68,7 @@ function procesarCompra(producto) {
     }
 }
 
+//Deshace la última compra
 function deshacerCompra(lista, productos) {
     if (lista.length === 0) {
         mostrarMensaje("No hay compras para deshacer");
@@ -71,7 +80,7 @@ function deshacerCompra(lista, productos) {
     productoDevuelto.stock++;
     mostrarMensaje("Se quitó la remera " + colorQuitado + " del carrito. Stock actual: " + productoDevuelto.stock);
 }
-
+//Consulta stock de un producto
 function consultarStock(listaProductos) {
     let colorBuscado = prompt("¿De qué color querés consultar el stock?").toLowerCase().trim();
     let productoEncontrado = listaProductos.find((remera) => remera.color.toLowerCase() === colorBuscado);
@@ -82,7 +91,7 @@ function consultarStock(listaProductos) {
         mostrarMensaje("No trabajamos el color " + colorBuscado);
     }
 }
-
+//Pasa a primera el producto seleccionado
 function compraPrioritaria(lista, productos) {
     let colorElegido = prompt("¿Qué color querés como compra prioritaria?").toLowerCase().trim();
     let productoEncontrado = productos.find((remera) => remera.color.toLowerCase() === colorElegido);
@@ -99,7 +108,7 @@ function compraPrioritaria(lista, productos) {
         mostrarMensaje("No hay stock de remera " + productoEncontrado.color);
     }
 }
-
+//Entrega primero el producto seleccionado.
 function entregarPrimera(lista) {
     if (lista.length === 0) {
         mostrarMensaje("No hay remeras en el carrito para entregar");
@@ -110,6 +119,7 @@ function entregarPrimera(lista) {
     mostrarMensaje("Se entregó la remera " + entregada + ". Quedan " + lista.length + " en el carrito");
 }
 
+//Muestra los productos agregados al carrito
 function mostrarCarrito(lista) {
     if (lista.length === 0) {
         mostrarMensaje("No compraste ninguna remera");
@@ -123,6 +133,7 @@ function mostrarCarrito(lista) {
     mostrarMensaje(resumen);
 }
 
+//Cambia un producto por otro
 function reemplazarRemera(lista, productos) {
     if (lista.length === 0) {
         mostrarMensaje("No hay remeras en el carrito para cambiar");
@@ -167,6 +178,7 @@ function reemplazarRemera(lista, productos) {
     mostrarMensaje("Cambiaste la remera " + colorViejo + " por una " + productoNuevo.color);
 }
 
+//Menú principal con switch por casos, dependiendo la opcion seleccionada. 
 function opcionCompra(mensaje) {
     do {
         opcion = parseInt(prompt(mensaje));
@@ -201,7 +213,7 @@ function opcionCompra(mensaje) {
                 break;
             case 10:
                 reemplazarRemera(carrito, productos);
-                break;    
+                break;
             case 11:
                 mostrarMensaje("Saliendo...");
                 break;
